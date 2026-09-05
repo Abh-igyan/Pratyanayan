@@ -1,4 +1,4 @@
-# AI Revenue Recovery Agent
+# प्रत्यानयन (Pratyānayana): AI Revenue Recovery Agent
 
 Stateful AI-powered revenue recovery for Razorpay merchants. When a payment fails, the system automatically evaluates whether and how to recover the sale using a CatBoost ML model, an economic expected-value decision engine, and a stateful recovery agent.
 

@@ -1,7 +1,7 @@
 # AI Revenue Recovery — System Design
 
 > Canonical technical document.  
-> Version: v1.0 — auto-generated from live implementation.  
+> Version: v1.0 
 > Source of truth: repository code, tests, database models, and API routes.
 
 ---
