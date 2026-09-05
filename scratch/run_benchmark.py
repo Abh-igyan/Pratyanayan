@@ -1,0 +1,38 @@
+import sys, os
+sys.path.insert(0, 'C:/Users/sruja/revenue_recovery')
+os.chdir('C:/Users/sruja/revenue_recovery')
+from ml.benchmark_compare import compare_policies
+
+result = compare_policies(seed=42, count=1000)
+b = result["baseline"]
+a = result["ai"]
+
+print("=== BENCHMARK RESULTS (seed=42, n=1000) ===")
+print(f"Baseline:")
+print(f"  initial_failed_orders  = {b['initial_failed_orders']}")
+print(f"  total_at_risk_revenue  = {b['total_at_risk_revenue']:,}")
+print(f"  recovered_orders       = {b['recovered_orders']}")
+print(f"  recovered_revenue      = {b['recovered_revenue']:,.0f}")
+print(f"  recovery_rate          = {b['recovery_rate']:.4f}")
+print(f"  revenue_recovery_rate  = {b['revenue_recovery_rate']:.4f}")
+print(f"  recovery_attempts      = {b['recovery_attempts']}")
+print(f"  unnecessary_interv.    = {b['unnecessary_interventions']}")
+print(f"  exhausted_cases        = {b['exhausted_cases']}")
+print()
+print(f"AI Agent:")
+print(f"  recovered_orders       = {a['recovered_orders']}")
+print(f"  recovered_revenue      = {a['recovered_revenue']:,.0f}")
+print(f"  recovery_rate          = {a['recovery_rate']:.4f}")
+print(f"  revenue_recovery_rate  = {a['revenue_recovery_rate']:.4f}")
+print(f"  recovery_attempts      = {a['recovery_attempts']}")
+print(f"  retry                  = {a['retry']}")
+print(f"  wait                   = {a['wait']}")
+print(f"  stop                   = {a['stop']}")
+print(f"  unnecessary_interv.    = {a['unnecessary_interventions']}")
+print(f"  exhausted_cases        = {a['exhausted_cases']}")
+print()
+print(f"AI vs Baseline lift:")
+print(f"  revenue lift           = {result['ai_minus_baseline_recovered_revenue']:,.0f}")
+print(f"  recovery_rate lift     = {result['ai_minus_baseline_recovery_rate']:.4f}")
+print(f"  additional interv.     = {result['additional_interventions_required']}")
+print(f"  revenue_per_interv.    = {result['recovered_revenue_per_intervention']:,.0f}")

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Revenue Recovery Dashboard</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header class="topbar">
+      <h1>AI Revenue Recovery Dashboard</h1>
+      <button id="refresh-metrics" class="secondary">⟳ Refresh Dashboard</button>
+    </header>
+
+    <!-- Top Key Metrics -->
+    <section class="panel metrics-hero">
+      <div class="metric-hero-card warn-bg">
+        <div class="metric-label">Revenue at Risk</div>
+        <div class="metric-value warn" id="metric-at-risk">INR 0</div>
+      </div>
+      <div class="metric-hero-card success-bg highlight">
+        <div class="metric-label">Recovered Revenue</div>
+        <div class="metric-value good" id="metric-recovered">INR 0</div>
+      </div>
+      <div class="metric-hero-card">
+        <div class="metric-label">Recovery Rate</div>
+        <div class="metric-value" id="metric-rate">0%</div>
+      </div>
+      <div class="metric-hero-card">
+        <div class="metric-label">Recovery Attempts</div>
+        <div class="metric-value" id="metric-attempts">0</div>
+      </div>
+      <div class="metric-hero-card">
+        <div class="metric-label">Active Candidates</div>
+        <div class="metric-value" id="metric-active">0</div>
+      </div>
+    </section>
+
+    <!-- Split view for Demo Controls vs AI Decision details -->
+    <section class="split">
+      <div class="panel">
+        <h2>💳 New Payment Demo</h2>
+        <p style="font-size: 0.9em; color: var(--muted); margin-bottom: 16px;">
+          Simulate a real payment failure to trigger the AI Revenue Recovery flow.
+        </p>
+        <form id="order-form">
+          <label style="flex: 1;">
+            Customer ID
+            <input id="customer-id" value="cust_demo_001" required />
+          </label>
+          <label style="flex: 1;">
+            Amount (INR)
+            <input id="amount" type="number" min="1" step="1" value="500" required />
+          </label>
+          <button type="submit" style="width: 100%;">Create Order</button>
+        </form>
+        <div id="order-status" class="status-box"></div>
+        <div id="order-details" style="margin-top: 10px;"></div>
+        <button id="checkout-button" class="primary hidden" style="margin-top: 12px; width: 100%;">Open Razorpay Checkout</button>
+      </div>
+
+      <div class="panel" style="flex: 1;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 16px;">
+          <h2 style="margin: 0; border: none; padding: 0;">🤖 AI Recovery Analysis (Active Order)</h2>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button id="voice-toggle-btn" class="secondary" style="padding: 6px 12px; font-size: 0.8rem; display: flex; align-items: center; gap: 6px;">
+              <span id="voice-icon">🔇</span> <span id="voice-label">Enable Agent Voice</span>
+            </button>
+            <span id="voice-status-badge" class="badge neutral" style="font-size: 0.7rem;">Voice Off</span>
+          </div>
+        </div>
+        <div id="voice-live-banner" style="display: none; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; font-size: 0.9rem; color: #1e293b;"></div>
+        <div id="recovery-list">No active failure selected.</div>
+      </div>
+    </section>
+
+    <!-- Recovery Candidates Table -->
+    <section class="panel">
+      <h2>📋 Recovery Candidates & History</h2>
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Amount</th>
+              <th>Failure</th>
+              <th>Prob.</th>
+              <th>Expected Value</th>
+              <th>Net EV</th>
+              <th>AI Decision</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="history-table-body">
+            <!-- Rendered via JS -->
+            <tr><td colspan="9" style="text-align: center; color: var(--muted);">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Detailed System Metrics -->
+    <section class="panel">
+      <h2>📈 Detailed System Metrics</h2>
+      <div id="metrics" class="metrics-grid"></div>
+    </section>
+  </div>
+
+  <script src="/static/app.js?v=6"></script>
+</body>
+</html>
