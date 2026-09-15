@@ -38,6 +38,35 @@ function updateVoiceUI() {
   }
 }
 
+let cachedVoices = [];
+function loadVoices() {
+  if ('speechSynthesis' in window) {
+    cachedVoices = window.speechSynthesis.getVoices();
+  }
+}
+if ('speechSynthesis' in window) {
+  loadVoices();
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+}
+
+function selectHinglishVoice() {
+  if (!('speechSynthesis' in window)) return null;
+  const voices = cachedVoices.length ? cachedVoices : window.speechSynthesis.getVoices();
+  if (!voices || !voices.length) return null;
+
+  // 1. First priority: Indian English voice (reads Romanized Hinglish phonetically without spelling out words)
+  const enIn = voices.find(v => (v.lang === 'en-IN' || v.lang === 'en_IN') && !/kalpana|hemant|hindi/i.test(v.name));
+  if (enIn) return enIn;
+
+  // 2. Second priority: Any voice with Indian naming / accent that is not strictly Devanagari Hindi
+  const indianName = voices.find(v => /neerja|prabhat|heera|ravi|india/i.test(v.name) && !/kalpana|hemant/i.test(v.name));
+  if (indianName) return indianName;
+
+  // 3. Fallback: Any English voice which reads Latin letters phonetically rather than letter-by-letter
+  const enVoice = voices.find(v => v.lang && v.lang.startsWith('en'));
+  return enVoice || voices[0];
+}
+
 function stopVoicePlayback() {
   if ('speechSynthesis' in window) {
     window.speechSynthesis.cancel();
@@ -66,8 +95,16 @@ async function playAgentVoice(orderId, messageKey = null) {
       // Strip any stray emojis defensively before passing to TTS
       const cleanText = response.message.replace(/[\u{1F300}-\u{1FAFF}|\u{2600}-\u{27BF}]/gu, '').trim();
       const utterance = new SpeechSynthesisUtterance(cleanText || response.message);
-      utterance.lang = 'hi-IN';
+      
+      const chosenVoice = selectHinglishVoice();
+      if (chosenVoice) {
+        utterance.voice = chosenVoice;
+        utterance.lang = chosenVoice.lang;
+      } else {
+        utterance.lang = 'en-IN';
+      }
       utterance.rate = 0.95;
+      utterance.pitch = 1.0;
       window.speechSynthesis.speak(utterance);
       if (messageKey) {
         lastPlayedKey = messageKey;
